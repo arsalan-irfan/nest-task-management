@@ -15,7 +15,12 @@ import { TasksModule } from './tasks/tasks.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
+        const isProduction = configService.get("STAGE")==="prod";
         return {
+          ssl:isProduction,
+          extra:{
+            ssl:isProduction?{rejectUnauthorized:false}:null
+          },
           type: 'postgres',
           autoLoadEntities: true,
           synchronize: true,
